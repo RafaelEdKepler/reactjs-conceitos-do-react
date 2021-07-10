@@ -15,15 +15,53 @@ export function TaskList() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   function handleCreateNewTask() {
-    // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if (newTaskTitle) {
+      const randomNumber = createRandomNumber();
+      let task : Task = {
+        id: randomNumber,
+        title: newTaskTitle,
+        isComplete: false
+      }
+      let tasksCopy = Array.from(tasks);
+      tasksCopy.push(task);
+      setTasks(tasksCopy);
+      return;
+    }
+
+    console.log("Título da tarefa é obrigatório!");
+  }
+
+  function createRandomNumber() {
+    let randomNumber = Math.random() * (10000 - 1) + 1;
+    tasks.forEach(item => {
+      if (item.id === randomNumber) {
+        createRandomNumber();
+      }
+    })
+    return randomNumber;
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    let tasksCopy = Array.from(tasks);
+    tasksCopy.forEach(task => {
+      if (task.id === id) {
+        task.isComplete = task.isComplete ? false : true;
+      }
+    })
+    setTasks(tasksCopy);
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+    let tasksCopy = Array.from(tasks);
+    tasksCopy.forEach((item, index) => {
+      if (id === item.id) {
+        tasksCopy.splice(index, 1);
+      }
+    })
+    setTasks(tasksCopy);
+    return;
   }
 
   return (
